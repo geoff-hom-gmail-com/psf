@@ -1,0 +1,65 @@
+.App {
+  text-align: center;
+  min-height: 100%;
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "main main"
+    "footer footer";
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 1fr 1fr;
+}
+
+.App-logo {
+  /*
+  animation: App-logo-spin infinite 20s linear;
+  */
+  height: 80px;
+}
+
+.App-header {
+  grid-area: header;
+  padding: 0 10px;
+  background-color: #222222;
+  color: white;
+  display: grid;
+  align-items: center;
+  grid-gap: 10px;
+  grid-template-columns: auto 1fr auto;
+}
+
+.App-title {
+  font-size: 1.5em;
+  padding: 20px;
+  justify-self: end;
+  /*
+  color: blue;
+  */
+}
+
+.quote {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: auto 8fr 1fr 1fr auto;
+}
+
+.quotes {
+  padding: 0 10px 0 40px;
+  width: 80%;
+}
+
+.project {
+  padding: 0 10px;
+  width: 90%;
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: auto 8fr 1fr 1fr auto;
+}
+
+.App-main {
+  grid-area: main;
+}
+
+.App-footer {
+  grid-area: footer;
+}

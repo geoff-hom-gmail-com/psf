@@ -1,0 +1,11 @@
+body, html, #root {
+  /* Needed for sticky footer in React. If fails, can also try
+    https://medium.com/@stefanmaretic/react-sticky-footer-f842d5fbd68. */
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
