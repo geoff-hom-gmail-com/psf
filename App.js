@@ -89,7 +89,7 @@ function Main(props) {
         hasNew={true}
       />
       <Project
-        name="P3"
+        name="P4"
         quotes={2}
         hasNew={false}
       />
