@@ -41,17 +41,10 @@ class Project extends React.Component {
   }
 
   render() {
-    const quotesFromDB = [1, 2];
-    const quotes = quotesFromDB.map((quote, index) => {
-      return (
-        <Quote key={index.toString()}
-          description={'(description, quote ' + (index + 1) + ')'}
-          vendor="Trump"
-          expirationDate="(date format)"
-          // Return random number between 2000 and 4999. For sample data.
-          money={Math.floor((Math.random() * 3000) + 2000)}
-        />
-      );
+
+    // Add unique key to each quote. Instead of index, should use something else. Each quote should have a unique id in the database, or for production, could use short-id (https://medium.com/@robinpokorny/index-as-a-key-is-an-anti-pattern-e0349aece318)
+    const quotes = this.props.quotes.map((quote, index) => {
+      return React.cloneElement(quote, {key: index});
     });
 
     return(
@@ -63,8 +56,7 @@ class Project extends React.Component {
             +/-
           </button>
           <p>{this.props.name}</p>
-          <p>{this.props.quotes}</p>
-          {/* <p>{this.props.hasNew ? '(NEW)' : ''}</p> */}
+          <p>{this.props.quotes.length}</p>
           <p>{this.props.hasNew ? '(NEW)' : ''}</p>
           <button>EDIT</button>
         </div>
@@ -79,18 +71,54 @@ class Project extends React.Component {
 }
 
 function Main(props) {
+
+  // Placeholders until we connect to database.
+  const carQuote1 = <Quote
+    description="Transmission"
+    vendor="Transmissions, Inc."
+    expirationDate="8/22/18"
+    money={2200}
+  />
+  const carQuote2 = <Quote
+    description='Engine'
+    vendor="Trump Engines"
+    expirationDate="8/29/18"
+    money={4000}
+  />
+  const carQuote3 = <Quote
+    description="Tires"
+    vendor="Goodyear"
+    expirationDate="10/3/18"
+    money={800}
+  />
+  const quotesForCar = [carQuote1, carQuote2, carQuote3];
+
+  const houseQuote1 = <Quote
+    description="Fence"
+    vendor="John's Fence Builders"
+    expirationDate="9/30/18"
+    money={1000}
+  />
+  const houseQuote2 = <Quote
+    description="3 Bathrooms"
+    vendor="Home Depot"
+    expirationDate="8/31/18"
+    money={15600}
+  />
+  const quotesForHouse = [houseQuote1, houseQuote2];
+
   return(
     <div className="App-main">
       {/* Projects listed here.
         */}
       <Project
-        name="Space Force"
-        quotes={7}
-        hasNew={true}
+        name="Car"
+        quotes={quotesForCar}
+        hasNew={false}
       />
       <Project
-        name="P4"
-        quotes={2}
+        name="House"
+        quotes={quotesForHouse}
         hasNew={false}
       />
     </div>
