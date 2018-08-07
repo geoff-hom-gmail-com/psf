@@ -15,10 +15,10 @@ function Header(props) {
 function Quote(props) {
   return(
     <div className="quote">
-      <p>{props.description}</p>
-      <p>{props.vendor}</p>
-      <p>{props.expirationDate}</p>
-      <p>${props.money}</p>
+      <p className="quote-description">{props.description}</p>
+      <p className="quote-vendor">{props.vendor}</p>
+      <p className="quote-expiration">{props.expirationDate}</p>
+      <p className="quote-money">${props.money}</p>
       <button>Details</button>
     </div>
   )
@@ -33,7 +33,7 @@ class Project extends React.Component {
     }
 
   handleClick() {
-    console.log("hi");
+    console.log("hi2");
   //  alert('This is a test4');
     this.setState({
       showQuotes: !this.state.showQuotes,
@@ -55,8 +55,8 @@ class Project extends React.Component {
           <button onClick={() => this.handleClick()}>
             +/-
           </button>
-          <p>{this.props.name}</p>
-          <p>{this.props.quotes.length}</p>
+          <p className="project-name">{this.props.name}</p>
+          <p className="project-quotes">{this.props.quotes.length}</p>
           <p>{this.props.hasNew ? '(NEW)' : ''}</p>
           <button>EDIT</button>
         </div>
@@ -128,7 +128,7 @@ function Main(props) {
 function Footer(props) {
   return(
     <footer className="App-footer">
-      <h1><a href="https://www.psf.com/">PSF website</a></h1>
+      <h1><a href="https://www.psf.com/">PSF</a></h1>
     </footer>
   )
 }
