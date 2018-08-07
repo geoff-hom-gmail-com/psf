@@ -62,14 +62,12 @@
 .quote {
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: 1fr 1fr 0.2fr 0.2fr auto;
+  /* These widths aren't the greatest responsively. Really, we want third and fourth to be a fixed width (largest-auto in its column). The problem is that each quote is a separate grid (i.e. row). I need to go up a level, but that means abstracting a bit. Can google how to make a table/grid in React. */
+  grid-template-columns: 1fr 1fr 0.2fr 0.15fr auto;
 }
 
+/* If columns are smaller than text, it'll wrap and the justification seems to be lost. ToDo: Figure out how to fix. */
 .quote-description, .quote-vendor, .quote-expiration {
-  justify-self: start;
-}
-
-.quote-vendor {
   justify-self: start;
 }
 
