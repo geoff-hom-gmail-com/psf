@@ -2,16 +2,6 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-function Header(props) {
-  return(
-    <header className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-      <h1 className="App-title">Welcome, David</h1>
-      <button>User Details</button>
-    </header>
-  );
-}
-
 function Quote(props) {
   return(
     <div className="quote">
@@ -70,7 +60,7 @@ class Project extends React.Component {
   }
 }
 
-function Main(props) {
+function ProjectTable(props) {
 
   // Placeholders until we connect to database.
   const carQuote1 = <Quote
@@ -133,6 +123,18 @@ function Footer(props) {
   )
 }
 
+class Header extends Component {
+  render() {
+    return(
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <h1 className="App-title">Welcome, {this.props.user.name}</h1>
+        <button>User Details</button>
+      </header>
+    );
+  }
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -140,9 +142,7 @@ class App extends Component {
       // To report fetch error.
       error: null,
 
-      user: {
-        name: ""
-      },
+      user: {},
     };
   }
 
@@ -151,30 +151,55 @@ class App extends Component {
     // To test fetch error.
     // fetch("https://www.typicode.com/users/1")
 
-    fetch("https://jsonplaceholder.typicode.com/users/1")
-			.then(response => {
-        if (response.ok) {
-          return response.json();
+    let testLocal = false;
+    // Uncomment line below to test locally.
+    testLocal = true;
+    const user = {
+      "id": 1,
+      "name": "Bob Graham",
+      "projects": [
+        {
+          "name": "Car2",
+          "quotes": [
+            {
+              "description": "transmission"
+            }, {
+              "description": "engine"
+            }
+          ]
+        }, {
+          "name": "House2"
         }
-        // I thought fetch didn't throw an error on 404. However, I couldn't get the error below to throw on 404. Leaving it in case.
-        throw new Error(`Response was not ok. Status: ${response.status}.`);
-			})
-      .then(json => {
-        // console.log("json name: ", json.name);
-        // Not sure how best to get data. Probably call function here to populate user from json.
-        // PrevState and the spread operator are safer: https://stackoverflow.com/questions/43638938/updating-an-object-with-setstate-in-react. Not sure how to safely and cleanly update the state of just one property. Perhaps don't want to have entire user object in component state. It's not the model; it's managing the UI state of the component. 
-				this.setState(prevState => ({user: {...prevState.user, name: json.name} }) );
-			})
-      .catch(error => {
-        console.log(`There was a fetch error: ${error.message}.`);
-        this.setState({error});
-      });
+      ]
+    };
+
+    if (testLocal) {
+      this.setState({user});
+    } else {
+      fetch("https://jsonplaceholder.typicode.com/users/1")
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          // I thought fetch didn't throw an error on 404. However, I couldn't get the error below to throw on 404. Leaving it in case.
+          throw new Error(`Response was not ok. Status: ${response.status}.`);
+        })
+        .then(json => {
+          // console.log("Old JSON: ", json);
+          // console.log("json name: ", json.name);
+          // Not sure how best to get data. Probably call function here to populate user from json.
+          // PrevState and the spread operator are safer: https://stackoverflow.com/questions/43638938/updating-an-object-with-setstate-in-react. Not sure how to safely and cleanly update the state of just one property. Perhaps don't want to have entire user object in component state. It's not the model; it's managing the UI state of the component.
+          this.setState(prevState => ({user: {...prevState.user, name: json.name} }) );
+        })
+        .catch(error => {
+          console.log(`There was a fetch error: ${error.message}.`);
+          this.setState({error});
+        });
+    }
   }
 
   render() {
     const error = this.state.error;
-    const name = this.state.user.name;
-
     return (
       <div className="App">
         {/* Would prefer error message at top. In practice, it currently appears on page's bottom. Why?
@@ -182,11 +207,9 @@ class App extends Component {
         {error &&
           <div>There was a fetch error: {error.message}.</div>
         }
-        {name &&
-          <div>Hello, {name}.</div>
-        }
-        <Header />
-        <Main />
+        <div>Hello, {this.state.user.name}.</div>
+        <Header user={this.state.user}/>
+        <ProjectTable />
         <Footer />
       </div>
     );

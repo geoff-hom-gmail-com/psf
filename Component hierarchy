@@ -1,0 +1,15 @@
+This should be a plain text file. With a decent text editor, can indent/outdent easily.
+
+Component hierarchy:
+
+• PSF: contains entire app
+  • Header: shows logo, user name, button for user details
+    • Y: shows user details? or shows user details in modal?
+  • ProjectTable: shows the user's projects
+    • ProjectTableHeader: shows the column titles for all projects
+    • ProjectCollapsibleRow: expands to show a project's quotes
+      • ProjectInfo: shows info for a project
+      • QuoteTable: shows the project's quotes
+        • QuoteTableHeader: shows the column titles for all quotes
+        • QuoteRow: shows a row for each quote
+  • Footer: shows PSF link
