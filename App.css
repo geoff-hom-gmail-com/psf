@@ -1,3 +1,5 @@
+/* Alphabetical. */
+
 .App {
   display: grid;
   grid-template-areas:
@@ -10,7 +12,20 @@
   text-align: center;
 }
 
-.App-header {
+/* Aligns with .project-table-header.  */
+.expandable-project-row {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: 0.8fr 11.2fr;
+  padding: 0 10px;
+  width: 90%;
+}
+
+.footer {
+  grid-area: footer;
+}
+
+.header {
   align-items: center;
   background-color: #222222;
   color: white;
@@ -21,29 +36,18 @@
   padding: 0 10px;
 }
 
-.App-logo {
+.logo {
   /*
   animation: App-logo-spin infinite 20s linear;
   */
   height: 80px;
 }
 
-.App-title {
-  font-size: 1.5em;
-  justify-self: end;
-  padding: 20px;
-}
-
-.App-main {
-  grid-area: main;
-}
-
-.project {
+/* Aligns with .project-table-header.  */
+.project-info-row {
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: auto 8fr 1fr 1fr auto;
-  padding: 0 10px;
-  width: 90%;
+  grid-template-columns: 8fr 1fr 1fr 1.2fr;
 }
 
 .project-name {
@@ -54,27 +58,50 @@
   justify-self: end;
 }
 
-.quotes {
+.project-table {
+  grid-area: main;
+}
+
+/* Aligns with .expandable-project-row (which contains .project-info-row).  */
+.project-table-header {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: 0.8fr 8fr 1fr 1fr 1.2fr;
+  padding: 0 10px;
+  width: 90%;
+}
+
+/* Aligns with .quote-table-header. */
+.quote-row {
+  display: grid;
+  grid-gap: 10px;
+  /* These widths aren't the greatest responsively. Really, we want third and fourth to be a fixed width (largest-auto in its column). The problem is that each quote is a separate grid (i.e. row). I need to go up a level, but that means abstracting a bit. Can google how to make a table/grid in React. */
+  grid-template-columns: 1fr 1fr 0.4fr 0.4fr 0.3fr;
+}
+
+/* If columns are smaller than text, it'll wrap and the justification seems to be lost. ToDo: Figure out how to fix. */
+.quote-description, .quote-expiration, .quote-vendor {
+  justify-self: start;
+}
+
+.quote-cost {
+  justify-self: end;
+}
+
+.quote-table {
   padding: 0 10px 0 40px;
   width: 80%;
 }
 
-.quote {
+/* Aligns with .quote-row. */
+.quote-table-header {
   display: grid;
   grid-gap: 10px;
-  /* These widths aren't the greatest responsively. Really, we want third and fourth to be a fixed width (largest-auto in its column). The problem is that each quote is a separate grid (i.e. row). I need to go up a level, but that means abstracting a bit. Can google how to make a table/grid in React. */
-  grid-template-columns: 1fr 1fr 0.2fr 0.15fr auto;
+  grid-template-columns: 1fr 1fr 0.4fr 0.4fr 0.3fr;
 }
 
-/* If columns are smaller than text, it'll wrap and the justification seems to be lost. ToDo: Figure out how to fix. */
-.quote-description, .quote-vendor, .quote-expiration {
-  justify-self: start;
-}
-
-.quote-money {
+.title {
+  font-size: 1.5em;
   justify-self: end;
-}
-
-.App-footer {
-  grid-area: footer;
+  padding: 20px;
 }
