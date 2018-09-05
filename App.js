@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
@@ -20,10 +20,6 @@ class App extends Component {
 
 // move this later to wherever it belongs
   componentDidMount() {
-    let testLocal = false;
-    // Uncomment line below to test locally.
-    testLocal = true;
-
     const user = {
       "id": 1,
       "name": "Bob Graham",
@@ -50,16 +46,20 @@ class App extends Component {
       ]
     };
 
+    let testLocal = false;
+    // Uncomment line below to test locally.
+    testLocal = true;
+
     if (testLocal) {
-      console.log("testing local");
       this.setState({
         user
       });
     } else {
-      // To test fetch error, uncomment below and comment normal URL.
-      // fetch("https://www.typicode.com/users/1")
+      let url = "https://jsonplaceholder.typicode.com/users/1";
+      // To test fetch error, uncomment line below.
+      // url = "https://wrongdomain.typicode.com";
 
-      fetch("https://jsonplaceholder.typicode.com/users/1")
+      fetch(url)
         .then(response => {
           if (response.ok) {
             return response.json();
@@ -87,7 +87,7 @@ class App extends Component {
         {/* Would prefer error message at top. In practice, it currently appears on page's bottom. Why? Something to do with being async?
           */}
         {error ?
-          <div>There was a fetch error: {error.message}.</div> :
+          `There was a fetch error: ${error.message}.` :
           null
         }
         <Header user={this.state.user}/>
@@ -114,7 +114,7 @@ class ExpandableProjectRow extends Component {
 
   render() {
     return(
-      <div>
+      <Fragment>
         <div className="expandable-project-row">
           <button onClick={() => this.toggleQuotes()}>+/-</button>
           <ProjectInfoRow project={this.props.project} />
@@ -123,7 +123,7 @@ class ExpandableProjectRow extends Component {
           <QuoteTable quotes={this.props.project.quotes}/> :
           null
         }
-      </div>
+      </Fragment>
     );
   }
 }
