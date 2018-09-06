@@ -18,7 +18,7 @@ class App extends Component {
     };
   }
 
-// move this later to wherever it belongs
+// move this later to wherever it belongs; maybe I can extract Fetch code with render prop?
   componentDidMount() {
     const user = {
       "id": 1,
@@ -103,6 +103,7 @@ class App extends Component {
           data={this.state.user.projects}
           header={projectTableHeader}
           rowComponentName={ExpandableProjectRow}
+          rowDataPropName={"rowData"}
           rootClassName={"project-table"} />
         <Footer />
       </div>
@@ -110,36 +111,40 @@ class App extends Component {
   }
 }
 
-// Show data in a row. Can expand that data to a table underneath.
 // Could make this more reusable as ExpandableRow if needed.
+// Show data in a row. Can expand some data into a table underneath.
 class ExpandableProjectRow extends Component {
+  static defaultProps = {
+    rowData: null
+  }
+
   constructor(props) {
     super(props);
     this.state = {
-      showQuotes: false,
+      showTable: false,
     };
   }
 
-  toggleQuotes() {
+  toggleTable() {
     this.setState({
-      showQuotes: !this.state.showQuotes,
+      showTable: !this.state.showTable,
     });
   }
 
   render() {
-    const quoteTableHeader =
+    const tableHeader =
       <TableHeader rootClassName={"quote-table-header"}>
         <p className="quote-description">Description</p>
         <p className="quote-vendor">Vendor</p>
         <p className="quote-expiration">Expires</p>
         <p className="quote-cost">$</p>
       </TableHeader>;
-    let quoteTable = null;
-    if (this.state.showQuotes) {
-      quoteTable =
+    let table = null;
+    if (this.state.showTable) {
+      table =
         <Table
-          data={this.props.data.quotes}
-          header={quoteTableHeader}
+          data={this.props.rowData.quotes}
+          header={tableHeader}
           rowComponentName={QuoteRow}
           rootClassName={"quote-table"} />
     }
@@ -147,10 +152,10 @@ class ExpandableProjectRow extends Component {
     return(
       <Fragment>
         <div className="expandable-project-row">
-          <button onClick={() => this.toggleQuotes()}>+/-</button>
-          <ProjectInfoRow project={this.props.data} />
+          <button onClick={() => this.toggleTable()}>+/-</button>
+          <ProjectInfoRow data={this.props.rowData} />
         </div>
-        {quoteTable}
+        {table}
       </Fragment>
     );
   }
@@ -167,6 +172,12 @@ class Footer extends Component {
 }
 
 class Header extends Component {
+  static defaultProps = {
+    user: {
+      name: "Guest"
+    },
+  }
+
   render() {
     return(
       <header className="header">
@@ -179,11 +190,18 @@ class Header extends Component {
 }
 
 class ProjectInfoRow extends Component {
+  static defaultProps = {
+    data: {
+      name: "Project Meta",
+      quotes: []
+    },
+  }
+
   render() {
     return(
       <div className="project-info-row">
-        <p className="project-name">{this.props.project.name}</p>
-        <p className="project-quotes">{this.props.project.quotes.length}</p>
+        <p className="project-name">{this.props.data.name}</p>
+        <p className="project-quotes">{this.props.data.quotes.length}</p>
         <p>{this.props.hasNew ? '(NEW)' : ' '}</p>
         <button>EDIT</button>
       </div>
@@ -191,8 +209,16 @@ class ProjectInfoRow extends Component {
   }
 }
 
-// Can make this a generic row for reuse. TODO???. Add defaults.
 class QuoteRow extends Component {
+  static defaultProps = {
+    data: {
+      description: "Quote 3",
+      vendor: "Fav Vendor",
+      expiration: "N/A",
+      cost: "$$$"
+    },
+  }
+
   render() {
     return(
       <div className="quote-row">
@@ -206,24 +232,27 @@ class QuoteRow extends Component {
   }
 }
 
-// use default to avoid assigning theData?
+// Make table. Takes in a component to use for each row, and the prop to assign each row data.
 class Table extends Component {
-  render() {
-    const rows = [];
-    const Row = this.props.rowComponentName;
-    const theData = this.props.data;
-    if (theData) {
-      theData.forEach( (datum) => {
-        rows.push(
-          <Row
-            data={datum}
-            key={++keyCounter}
-          />
-        );
-      });
-    }
+  static defaultProps = {
+    data: [],
+    rowDataPropName: "data"
+  }
 
-    return(
+  render() {
+    const Row = this.props.rowComponentName;
+    const rows = this.props.data.map( (datum) => {
+      const customProps =
+        {[this.props.rowDataPropName]:datum};
+      return (
+        <Row
+          key={++keyCounter}
+          {...customProps}
+        />
+      );
+    });
+
+    return (
       <div className={this.props.rootClassName}>
         {this.props.header}
         {rows}
@@ -234,7 +263,7 @@ class Table extends Component {
 
 class TableHeader extends Component {
   render() {
-    return(
+    return (
       <div className={this.props.rootClassName}>
         {this.props.children}
       </div>
