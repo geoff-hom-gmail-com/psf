@@ -102,8 +102,9 @@ class App extends Component {
         <Table
           data={this.state.user.projects}
           header={projectTableHeader}
-          rowComponentName={ExpandableProjectRow}
-          rowDataPropName={"rowData"}
+          mapFunction={project =>
+            <ExpandableProjectRow rowData={project} key={++keyCounter} />
+          }
           rootClassName={"project-table"} />
         <Footer />
       </div>
@@ -111,7 +112,7 @@ class App extends Component {
   }
 }
 
-// Could make this more reusable as ExpandableRow if needed.
+// Could make this more reusable as ExpandableRow if needed. (take in a row component to display main data; and take in a table to display on button toggle.)
 // Show data in a row. Can expand some data into a table underneath.
 class ExpandableProjectRow extends Component {
   static defaultProps = {
@@ -139,23 +140,22 @@ class ExpandableProjectRow extends Component {
         <p className="quote-expiration">Expires</p>
         <p className="quote-cost">$</p>
       </TableHeader>;
-    let table = null;
-    if (this.state.showTable) {
-      table =
-        <Table
-          data={this.props.rowData.quotes}
-          header={tableHeader}
-          rowComponentName={QuoteRow}
-          rootClassName={"quote-table"} />
-    }
+    const table =
+      <Table
+        data={this.props.rowData.quotes}
+        header={tableHeader}
+        mapFunction={quote =>
+          <QuoteRow data={quote} key={++keyCounter} />
+        }
+        rootClassName={"quote-table"} />;
 
-    return(
+    return (
       <Fragment>
         <div className="expandable-project-row">
           <button onClick={() => this.toggleTable()}>+/-</button>
           <ProjectInfoRow data={this.props.rowData} />
         </div>
-        {table}
+        {this.state.showTable ? table : null}
       </Fragment>
     );
   }
@@ -163,7 +163,7 @@ class ExpandableProjectRow extends Component {
 
 class Footer extends Component {
   render() {
-    return(
+    return (
       <footer className="footer">
         <h1><a href="https://www.psf.com/">PSF</a></h1>
       </footer>
@@ -179,7 +179,7 @@ class Header extends Component {
   }
 
   render() {
-    return(
+    return (
       <header className="header">
         <img src={logo} className="logo" alt="logo" />
         <h1 className="title">Welcome, {this.props.user.name}</h1>
@@ -198,7 +198,7 @@ class ProjectInfoRow extends Component {
   }
 
   render() {
-    return(
+    return (
       <div className="project-info-row">
         <p className="project-name">{this.props.data.name}</p>
         <p className="project-quotes">{this.props.data.quotes.length}</p>
@@ -214,13 +214,13 @@ class QuoteRow extends Component {
     data: {
       description: "Quote 3",
       vendor: "Fav Vendor",
-      expiration: "N/A",
-      cost: "$$$"
+      expirationDate: "N/A",
+      cost: "10"
     },
   }
 
   render() {
-    return(
+    return (
       <div className="quote-row">
         <p className="quote-description">{this.props.data.description}</p>
         <p className="quote-vendor">{this.props.data.vendor}</p>
@@ -232,30 +232,17 @@ class QuoteRow extends Component {
   }
 }
 
-// Make table. Takes in a component to use for each row, and the prop to assign each row data.
+// Make a table. Takes in a map function to make the rows.
 class Table extends Component {
   static defaultProps = {
     data: [],
-    rowDataPropName: "data"
   }
 
   render() {
-    const Row = this.props.rowComponentName;
-    const rows = this.props.data.map( (datum) => {
-      const customProps =
-        {[this.props.rowDataPropName]:datum};
-      return (
-        <Row
-          key={++keyCounter}
-          {...customProps}
-        />
-      );
-    });
-
     return (
       <div className={this.props.rootClassName}>
         {this.props.header}
-        {rows}
+        {this.props.data.map(this.props.mapFunction)}
       </div>
     );
   }
