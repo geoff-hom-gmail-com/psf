@@ -82,6 +82,14 @@ class App extends Component {
 
   render() {
     const error = this.state.error;
+    const projectTableHeader =
+      <TableHeader rootClassName={"project-table-header"}>
+        <p></p>
+        <p className="project-name">Project name</p>
+        <p className="project-quotes">Quotes</p>
+        <p>New?</p>
+      </TableHeader>;
+
     return (
       <div className="App">
         {/* Would prefer error message at top. In practice, it currently appears on page's bottom. Why? Something to do with being async?
@@ -90,14 +98,20 @@ class App extends Component {
           `There was a fetch error: ${error.message}.` :
           null
         }
-        <Header user={this.state.user}/>
-        <ProjectTable projects={this.state.user.projects}/>
+        <Header user={this.state.user} />
+        <Table
+          data={this.state.user.projects}
+          header={projectTableHeader}
+          rowComponentName={ExpandableProjectRow}
+          rootClassName={"project-table"} />
         <Footer />
       </div>
     );
   }
 }
 
+// Show data in a row. Can expand that data to a table underneath.
+// Could make this more reusable as ExpandableRow if needed.
 class ExpandableProjectRow extends Component {
   constructor(props) {
     super(props);
@@ -113,16 +127,30 @@ class ExpandableProjectRow extends Component {
   }
 
   render() {
+    const quoteTableHeader =
+      <TableHeader rootClassName={"quote-table-header"}>
+        <p className="quote-description">Description</p>
+        <p className="quote-vendor">Vendor</p>
+        <p className="quote-expiration">Expires</p>
+        <p className="quote-cost">$</p>
+      </TableHeader>;
+    let quoteTable = null;
+    if (this.state.showQuotes) {
+      quoteTable =
+        <Table
+          data={this.props.data.quotes}
+          header={quoteTableHeader}
+          rowComponentName={QuoteRow}
+          rootClassName={"quote-table"} />
+    }
+
     return(
       <Fragment>
         <div className="expandable-project-row">
           <button onClick={() => this.toggleQuotes()}>+/-</button>
-          <ProjectInfoRow project={this.props.project} />
+          <ProjectInfoRow project={this.props.data} />
         </div>
-        {this.state.showQuotes ?
-          <QuoteTable quotes={this.props.project.quotes}/> :
-          null
-        }
+        {quoteTable}
       </Fragment>
     );
   }
@@ -163,66 +191,32 @@ class ProjectInfoRow extends Component {
   }
 }
 
-class ProjectTable extends Component {
-  render() {
-    const projects = [];
-    const theProjects = this.props.projects;
-    if (theProjects) {
-      theProjects.forEach( (project) => {
-        projects.push(
-          <ExpandableProjectRow
-            project={project}
-            key={++keyCounter}
-          />
-        );
-      });
-    }
-
-    return(
-      <div className="project-table">
-        <ProjectTableHeader />
-        {projects}
-      </div>
-    );
-  }
-}
-
-class ProjectTableHeader extends Component {
-  render() {
-    return(
-      <div className="project-table-header">
-        <p></p>
-        <p className="project-name">Project name</p>
-        <p className="project-quotes">Quotes</p>
-        <p>New?</p>
-      </div>
-    );
-  }
-}
-
+// Can make this a generic row for reuse. TODO???. Add defaults.
 class QuoteRow extends Component {
   render() {
     return(
       <div className="quote-row">
-        <p className="quote-description">{this.props.quote.description}</p>
-        <p className="quote-vendor">{this.props.quote.vendor}</p>
-        <p className="quote-expiration">{this.props.quote.expirationDate}</p>
-        <p className="quote-cost">${this.props.quote.cost}</p>
+        <p className="quote-description">{this.props.data.description}</p>
+        <p className="quote-vendor">{this.props.data.vendor}</p>
+        <p className="quote-expiration">{this.props.data.expirationDate}</p>
+        <p className="quote-cost">${this.props.data.cost}</p>
         <button>Details</button>
       </div>
     );
   }
 }
 
-class QuoteTable extends Component {
+// use default to avoid assigning theData?
+class Table extends Component {
   render() {
-    const quotes = [];
-    const theQuotes = this.props.quotes;
-    if (theQuotes) {
-      theQuotes.forEach( (quote) => {
-        quotes.push(
-          <QuoteRow
-            quote={quote}
+    const rows = [];
+    const Row = this.props.rowComponentName;
+    const theData = this.props.data;
+    if (theData) {
+      theData.forEach( (datum) => {
+        rows.push(
+          <Row
+            data={datum}
             key={++keyCounter}
           />
         );
@@ -230,22 +224,19 @@ class QuoteTable extends Component {
     }
 
     return(
-      <div className="quote-table">
-        <QuoteTableHeader />
-        {quotes}
+      <div className={this.props.rootClassName}>
+        {this.props.header}
+        {rows}
       </div>
     );
   }
 }
 
-class QuoteTableHeader extends Component {
+class TableHeader extends Component {
   render() {
     return(
-      <div className="quote-table-header">
-        <p className="quote-description">Description</p>
-        <p className="quote-vendor">Vendor</p>
-        <p className="quote-expiration">Expires</p>
-        <p className="quote-cost">$</p>
+      <div className={this.props.rootClassName}>
+        {this.props.children}
       </div>
     );
   }
