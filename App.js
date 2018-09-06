@@ -82,12 +82,20 @@ class App extends Component {
 
   render() {
     const error = this.state.error;
+    const user = this.state.user;
     const projectTableHeader =
       <TableHeader rootClassName={"project-table-header"}>
         <p></p>
         <p className="project-name">Project name</p>
         <p className="project-quotes">Quotes</p>
         <p>New?</p>
+      </TableHeader>;
+    const quoteTableHeader =
+      <TableHeader rootClassName={"quote-table-header"}>
+        <p className="quote-description">Description</p>
+        <p className="quote-vendor">Vendor</p>
+        <p className="quote-expiration">Expires</p>
+        <p className="quote-cost">$</p>
       </TableHeader>;
 
     return (
@@ -98,27 +106,39 @@ class App extends Component {
           `There was a fetch error: ${error.message}.` :
           null
         }
-        <Header user={this.state.user} />
+        <Header user={user} />
+
+        {/* A project table. Each row can expand into a quote table. */}
         <Table
-          data={this.state.user.projects}
+          data={user.projects}
           header={projectTableHeader}
-          mapFunction={project =>
-            <ExpandableProjectRow rowData={project} key={++keyCounter} />
+          mapFunction={project => {
+            const quoteTable =
+              <Table
+                data={project.quotes}
+                header={quoteTableHeader}
+                mapFunction={quote =>
+                  <QuoteRow data={quote} key={++keyCounter} />
+                }
+                rootClassName={"quote-table"} />;
+
+            return (
+              <ExpandableRow
+                key={++keyCounter}
+                rowComponent={<ProjectInfoRow data={project} />}
+                table={quoteTable} />
+            )}
           }
           rootClassName={"project-table"} />
+
         <Footer />
       </div>
     );
   }
 }
 
-// Could make this more reusable as ExpandableRow if needed. (take in a row component to display main data; and take in a table to display on button toggle.)
-// Show data in a row. Can expand some data into a table underneath.
-class ExpandableProjectRow extends Component {
-  static defaultProps = {
-    rowData: null
-  }
-
+// Show a row. Can toggle a table below that.
+class ExpandableRow extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -133,29 +153,13 @@ class ExpandableProjectRow extends Component {
   }
 
   render() {
-    const tableHeader =
-      <TableHeader rootClassName={"quote-table-header"}>
-        <p className="quote-description">Description</p>
-        <p className="quote-vendor">Vendor</p>
-        <p className="quote-expiration">Expires</p>
-        <p className="quote-cost">$</p>
-      </TableHeader>;
-    const table =
-      <Table
-        data={this.props.rowData.quotes}
-        header={tableHeader}
-        mapFunction={quote =>
-          <QuoteRow data={quote} key={++keyCounter} />
-        }
-        rootClassName={"quote-table"} />;
-
     return (
       <Fragment>
         <div className="expandable-project-row">
           <button onClick={() => this.toggleTable()}>+/-</button>
-          <ProjectInfoRow data={this.props.rowData} />
+          {this.props.rowComponent}
         </div>
-        {this.state.showTable ? table : null}
+        {this.state.showTable ? this.props.table : null}
       </Fragment>
     );
   }
