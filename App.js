@@ -18,118 +18,125 @@ class App extends Component {
     };
   }
 
-// move this later to wherever it belongs; maybe I can extract Fetch code with render prop?
+  // move this later to wherever it belongs; maybe I can extract Fetch code with render prop?
   componentDidMount() {
     const user = {
-      "id": 1,
-      "name": "Bob Graham",
-      "projects": [
+      id: 1,
+      name: 'Bob Graham',
+      projects: [
         {
-          "name": "Firebird",
-          "quotes": [
+          name: 'Firebird',
+          quotes: [
             {
-              "description": "Transmission",
-              "vendor": "Transmissions, Inc.",
-              "expirationDate": "8.22.18",
-              "cost": 2200
-            }, {
-              "description": "Engine",
-              "vendor": "Trump Engines",
-              "expirationDate": "8.29.18",
-              "cost": 4000
-            }
-          ]
-        }, {
-          "name": "House",
-          "quotes": []
-        }
-      ]
+              description: 'Transmission',
+              vendor: 'Transmissions, Inc.',
+              expirationDate: '8.22.18',
+              cost: 2200,
+            },
+            {
+              description: 'Engine',
+              vendor: 'Trump Engines',
+              expirationDate: '8.29.18',
+              cost: 4000,
+            },
+          ],
+        },
+        {
+          name: 'House',
+          quotes: [],
+        },
+      ],
     };
 
-    let testLocal = false;
+    // const testLocal = false;
     // Uncomment line below to test locally.
-    testLocal = true;
+    const testLocal = true;
 
     if (testLocal) {
       this.setState({
-        user
+        user,
       });
     } else {
-      let url = "https://jsonplaceholder.typicode.com/users/1";
-      // To test fetch error, uncomment line below.
-      // url = "https://wrongdomain.typicode.com";
+      const url = 'https://jsonplaceholder.typicode.com/users/1';
+      // To test fetch error, use line below.
+      // const url = "https://wrongdomain.typicode.com";
 
       fetch(url)
-        .then(response => {
+        .then((response) => {
           if (response.ok) {
             return response.json();
           }
-          // I thought fetch didn't throw an error on 404. However, I couldn't get the error below to throw on 404. Leaving it in case.
+          // I thought fetch didn't throw an error on 404. However, I couldn't
+          // get the error below to throw on 404. Leaving it in case.
           throw new Error(`Response was not ok. Status: ${response.status}.`);
         })
-        .then(json => {
+        .then((json) => {
           // console.log("json name: ", json.name);
           // Not sure how best to get data. Probably call function here to populate user from json.
           // PrevState and the spread operator are safer: https://stackoverflow.com/questions/43638938/updating-an-object-with-setstate-in-react. Not sure how to safely and cleanly update the state of just one property. Perhaps don't want to have entire user object in component state. It's not the model; it's managing the UI state of the component.
-          this.setState(prevState => ({user: {...prevState.user, name: json.name} }) );
+          this.setState(prevState => ({
+            user: { ...prevState.user, name: json.name },
+          }));
         })
-        .catch(error => {
-          console.log(`There was a fetch error: ${error.message}.`);
-          this.setState({error});
+        .catch((error) => {
+          // console.log(`There was a fetch error: ${error.message}.`);
+          this.setState({ error });
         });
     }
   }
 
   render() {
-    const error = this.state.error;
-    const user = this.state.user;
-    const projectTableHeader =
-      <TableHeader rootClassName={"project-table-header"}>
-        <p></p>
+    const { error } = this.state;
+    const { user } = this.state;
+    const projectTableHeader = (
+      <TableHeader rootClassName="project-table-header">
+        <p />
         <p className="project-name">Project name</p>
         <p className="project-quotes">Quotes</p>
         <p>New?</p>
-      </TableHeader>;
-    const quoteTableHeader =
-      <TableHeader rootClassName={"quote-table-header"}>
+      </TableHeader>
+    );
+    const quoteTableHeader = (
+      <TableHeader rootClassName="quote-table-header">
         <p className="quote-description">Description</p>
         <p className="quote-vendor">Vendor</p>
         <p className="quote-expiration">Expires</p>
         <p className="quote-cost">$</p>
-      </TableHeader>;
+      </TableHeader>
+    );
 
     return (
       <div className="App">
-        {/* Would prefer error message at top. In practice, it currently appears on page's bottom. Why? Something to do with being async?
+        {/* Would prefer error message at top. In practice, it currently
+          appears on page's bottom. Why? Something to do with being async?
           */}
-        {error ?
-          `There was a fetch error: ${error.message}.` :
-          null
-        }
+        {error ? `There was a fetch error: ${error.message}.` : null}
         <Header user={user} />
 
         {/* A project table. Each row can expand into a quote table. */}
         <Table
           data={user.projects}
           header={projectTableHeader}
-          mapFunction={project => {
-            const quoteTable =
+          mapFunction={(project) => {
+            const quoteTable = (
               <Table
                 data={project.quotes}
                 header={quoteTableHeader}
-                mapFunction={quote =>
-                  <QuoteRow data={quote} key={++keyCounter} />
-                }
-                rootClassName={"quote-table"} />;
+                mapFunction={quote => <QuoteRow data={quote} key={keyCounter += 1} />}
+                rootClassName="quote-table"
+              />
+            );
 
             return (
               <ExpandableRow
-                key={++keyCounter}
+                key={keyCounter += 1}
                 rowComponent={<ProjectInfoRow data={project} />}
-                table={quoteTable} />
-            )}
-          }
-          rootClassName={"project-table"} />
+                table={quoteTable}
+              />
+            );
+          }}
+          rootClassName="project-table"
+        />
 
         <Footer />
       </div>
@@ -147,9 +154,7 @@ class ExpandableRow extends Component {
   }
 
   toggleTable() {
-    this.setState({
-      showTable: !this.state.showTable,
-    });
+    this.setState(prevState => ({ showTable: !prevState.showTable }));
   }
 
   render() {
@@ -169,24 +174,29 @@ class Footer extends Component {
   render() {
     return (
       <footer className="footer">
-        <h1><a href="https://www.psf.com/">PSF</a></h1>
+        <h1>
+          <a href="https://www.psf.com/">PSF</a>
+        </h1>
       </footer>
-    )
+    );
   }
 }
 
 class Header extends Component {
   static defaultProps = {
     user: {
-      name: "Guest"
+      name: 'Guest',
     },
-  }
+  };
 
   render() {
     return (
       <header className="header">
         <img src={logo} className="logo" alt="logo" />
-        <h1 className="title">Welcome, {this.props.user.name}</h1>
+        <h1 className="title">
+Welcome,
+          {this.props.user.name}
+        </h1>
         <button>User Details</button>
       </header>
     );
@@ -196,10 +206,10 @@ class Header extends Component {
 class ProjectInfoRow extends Component {
   static defaultProps = {
     data: {
-      name: "Project Meta",
-      quotes: []
+      name: 'Project Meta',
+      quotes: [],
     },
-  }
+  };
 
   render() {
     return (
@@ -216,12 +226,12 @@ class ProjectInfoRow extends Component {
 class QuoteRow extends Component {
   static defaultProps = {
     data: {
-      description: "Quote 3",
-      vendor: "Fav Vendor",
-      expirationDate: "N/A",
-      cost: "10"
+      description: 'Quote 3',
+      vendor: 'Fav Vendor',
+      expirationDate: 'N/A',
+      cost: '10',
     },
-  }
+  };
 
   render() {
     return (
@@ -229,7 +239,10 @@ class QuoteRow extends Component {
         <p className="quote-description">{this.props.data.description}</p>
         <p className="quote-vendor">{this.props.data.vendor}</p>
         <p className="quote-expiration">{this.props.data.expirationDate}</p>
-        <p className="quote-cost">${this.props.data.cost}</p>
+        <p className="quote-cost">
+$
+          {this.props.data.cost}
+        </p>
         <button>Details</button>
       </div>
     );
@@ -240,7 +253,7 @@ class QuoteRow extends Component {
 class Table extends Component {
   static defaultProps = {
     data: [],
-  }
+  };
 
   render() {
     return (
@@ -254,11 +267,7 @@ class Table extends Component {
 
 class TableHeader extends Component {
   render() {
-    return (
-      <div className={this.props.rootClassName}>
-        {this.props.children}
-      </div>
-    );
+    return <div className={this.props.rootClassName}>{this.props.children}</div>;
   }
 }
 
