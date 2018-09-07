@@ -1,9 +1,20 @@
+import PropTypes from 'prop-types';
 import React, { Component, Fragment } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
 let keyCounter = 1;
 // For unique keys. (https://reactjs.org/docs/lists-and-keys.html) Increment, then assign.
+
+const expandableRowDefaultProps = {
+  rowComponent: null,
+  table: null,
+};
+
+const expandableRowPropTypes = {
+  rowComponent: PropTypes.element,
+  table: PropTypes.element,
+};
 
 // Classes/functions are listed alphabetically.
 
@@ -86,8 +97,8 @@ class App extends Component {
   }
 
   render() {
-    const { error } = this.state;
-    const { user } = this.state;
+    const error = this.state.error;
+    const user = this.state.user;
     const projectTableHeader = (
       <TableHeader rootClassName="project-table-header">
         <p />
@@ -122,14 +133,14 @@ class App extends Component {
               <Table
                 data={project.quotes}
                 header={quoteTableHeader}
-                mapFunction={quote => <QuoteRow data={quote} key={keyCounter += 1} />}
+                mapFunction={quote => <QuoteRow data={quote} key={(keyCounter += 1)} />}
                 rootClassName="quote-table"
               />
             );
 
             return (
               <ExpandableRow
-                key={keyCounter += 1}
+                key={(keyCounter += 1)}
                 rowComponent={<ProjectInfoRow data={project} />}
                 table={quoteTable}
               />
@@ -161,7 +172,9 @@ class ExpandableRow extends Component {
     return (
       <Fragment>
         <div className="expandable-project-row">
-          <button onClick={() => this.toggleTable()}>+/-</button>
+          <button onClick={() => this.toggleTable()} type="button">
+            +/-
+          </button>
           {this.props.rowComponent}
         </div>
         {this.state.showTable ? this.props.table : null}
@@ -169,6 +182,9 @@ class ExpandableRow extends Component {
     );
   }
 }
+
+ExpandableRow.defaultProps = expandableRowDefaultProps;
+ExpandableRow.propTypes = expandableRowPropTypes;
 
 class Footer extends Component {
   render() {
@@ -194,7 +210,7 @@ class Header extends Component {
       <header className="header">
         <img src={logo} className="logo" alt="logo" />
         <h1 className="title">
-Welcome,
+          Welcome,
           {this.props.user.name}
         </h1>
         <button>User Details</button>
@@ -240,7 +256,7 @@ class QuoteRow extends Component {
         <p className="quote-vendor">{this.props.data.vendor}</p>
         <p className="quote-expiration">{this.props.data.expirationDate}</p>
         <p className="quote-cost">
-$
+          $
           {this.props.data.cost}
         </p>
         <button>Details</button>
