@@ -11,14 +11,122 @@ const expandableRowDefaultProps = {
   table: null,
 };
 
+const projectInfoRowDefaultProps = {
+  data: {
+    name: 'Project Meta',
+    quotes: [],
+  },
+  hasNew: false,
+};
+
+const psfHeaderDefaultProps = {
+  user: {
+    name: 'Guest',
+  },
+};
+
+const quoteRowDefaultProps = {
+  data: {
+    description: 'Quote 3',
+    vendor: 'Fav Vendor',
+    expirationDate: 'N/A',
+    cost: 10,
+  },
+};
+
+const tableDefaultProps = {
+  data: [],
+  header: null,
+};
+
+const tableHeaderDefaultProps = {};
+
 const expandableRowPropTypes = {
   rowComponent: PropTypes.element,
   table: PropTypes.element,
 };
 
+const projectInfoRowPropTypes = {
+  data: PropTypes.shape({
+    name: PropTypes.string,
+    quotes: PropTypes.array,
+  }),
+  hasNew: PropTypes.bool,
+};
+
+const psfHeaderPropTypes = {
+  user: PropTypes.shape({
+    name: PropTypes.string,
+  }),
+};
+
+const quoteRowPropTypes = {
+  data: PropTypes.shape({
+    description: PropTypes.string,
+    vendor: PropTypes.string,
+    expirationDate: PropTypes.string,
+    cost: PropTypes.number,
+  }),
+};
+
+const tablePropTypes = {
+  data: PropTypes.array,
+  header: PropTypes.element,
+  mapFunction: PropTypes.func.isRequired,
+  rootClassName: PropTypes.string.isRequired,
+};
+
+const tableHeaderPropTypes = {
+  children: PropTypes.array.isRequired,
+  rootClassName: PropTypes.string.isRequired,
+};
+
 // Classes/functions are listed alphabetically.
 
-class App extends Component {
+// Show a row. Can toggle a table below that.
+class ExpandableRow extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showTable: false,
+    };
+  }
+
+  toggleTable() {
+    this.setState(prevState => ({ showTable: !prevState.showTable }));
+  }
+
+  render() {
+    return (
+      <Fragment>
+        <div className="expandable-project-row">
+          <button onClick={() => this.toggleTable()} type="button">
+            +/-
+          </button>
+          {this.props.rowComponent}
+        </div>
+        {this.state.showTable ? this.props.table : null}
+      </Fragment>
+    );
+  }
+}
+ExpandableRow.defaultProps = expandableRowDefaultProps;
+ExpandableRow.propTypes = expandableRowPropTypes;
+
+function ProjectInfoRow(props) {
+  return (
+    <div className="project-info-row">
+      <p className="project-name">{props.data.name}</p>
+      <p className="project-quotes">{props.data.quotes.length}</p>
+      <p>{props.hasNew ? '(NEW)' : ' '}</p>
+      <button type="button">EDIT</button>
+    </div>
+  );
+}
+ProjectInfoRow.defaultProps = projectInfoRowDefaultProps;
+ProjectInfoRow.propTypes = projectInfoRowPropTypes;
+
+class PSF extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -122,7 +230,8 @@ class App extends Component {
           appears on page's bottom. Why? Something to do with being async?
           */}
         {error ? `There was a fetch error: ${error.message}.` : null}
-        <Header user={user} />
+
+        <PSFHeader user={user} />
 
         {/* A project table. Each row can expand into a quote table. */}
         <Table
@@ -149,142 +258,66 @@ class App extends Component {
           rootClassName="project-table"
         />
 
-        <Footer />
+        <PSFFooter />
       </div>
     );
   }
 }
 
-// Show a row. Can toggle a table below that.
-class ExpandableRow extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showTable: false,
-    };
-  }
-
-  toggleTable() {
-    this.setState(prevState => ({ showTable: !prevState.showTable }));
-  }
-
-  render() {
-    return (
-      <Fragment>
-        <div className="expandable-project-row">
-          <button onClick={() => this.toggleTable()} type="button">
-            +/-
-          </button>
-          {this.props.rowComponent}
-        </div>
-        {this.state.showTable ? this.props.table : null}
-      </Fragment>
-    );
-  }
+function PSFFooter() {
+  return (
+    <footer className="footer">
+      <h1>
+        <a href="https://www.psf.com/">PSF</a>
+      </h1>
+    </footer>
+  );
 }
 
-ExpandableRow.defaultProps = expandableRowDefaultProps;
-ExpandableRow.propTypes = expandableRowPropTypes;
-
-class Footer extends Component {
-  render() {
-    return (
-      <footer className="footer">
-        <h1>
-          <a href="https://www.psf.com/">PSF</a>
-        </h1>
-      </footer>
-    );
-  }
+function PSFHeader(props) {
+  // Allow no user, null user, and user without name.
+  const name = props.user ? props.user.name : 'Guest';
+  return (
+    <header className="header">
+      <img src={logo} className="logo" alt="logo" />
+      <h1 className="title">{`Welcome, ${name || 'Guest'}`}</h1>
+      <button type="button">User Details</button>
+    </header>
+  );
 }
+PSFHeader.defaultProps = psfHeaderDefaultProps;
+PSFHeader.propTypes = psfHeaderPropTypes;
 
-class Header extends Component {
-  static defaultProps = {
-    user: {
-      name: 'Guest',
-    },
-  };
-
-  render() {
-    return (
-      <header className="header">
-        <img src={logo} className="logo" alt="logo" />
-        <h1 className="title">
-          Welcome,
-          {this.props.user.name}
-        </h1>
-        <button>User Details</button>
-      </header>
-    );
-  }
+function QuoteRow(props) {
+  return (
+    <div className="quote-row">
+      <p className="quote-description">{props.data.description}</p>
+      <p className="quote-vendor">{props.data.vendor}</p>
+      <p className="quote-expiration">{props.data.expirationDate}</p>
+      <p className="quote-cost">{`$${props.data.cost}`}</p>
+      <button type="button">Details</button>
+    </div>
+  );
 }
-
-class ProjectInfoRow extends Component {
-  static defaultProps = {
-    data: {
-      name: 'Project Meta',
-      quotes: [],
-    },
-  };
-
-  render() {
-    return (
-      <div className="project-info-row">
-        <p className="project-name">{this.props.data.name}</p>
-        <p className="project-quotes">{this.props.data.quotes.length}</p>
-        <p>{this.props.hasNew ? '(NEW)' : ' '}</p>
-        <button>EDIT</button>
-      </div>
-    );
-  }
-}
-
-class QuoteRow extends Component {
-  static defaultProps = {
-    data: {
-      description: 'Quote 3',
-      vendor: 'Fav Vendor',
-      expirationDate: 'N/A',
-      cost: '10',
-    },
-  };
-
-  render() {
-    return (
-      <div className="quote-row">
-        <p className="quote-description">{this.props.data.description}</p>
-        <p className="quote-vendor">{this.props.data.vendor}</p>
-        <p className="quote-expiration">{this.props.data.expirationDate}</p>
-        <p className="quote-cost">
-          $
-          {this.props.data.cost}
-        </p>
-        <button>Details</button>
-      </div>
-    );
-  }
-}
+QuoteRow.defaultProps = quoteRowDefaultProps;
+QuoteRow.propTypes = quoteRowPropTypes;
 
 // Make a table. Takes in a map function to make the rows.
-class Table extends Component {
-  static defaultProps = {
-    data: [],
-  };
-
-  render() {
-    return (
-      <div className={this.props.rootClassName}>
-        {this.props.header}
-        {this.props.data.map(this.props.mapFunction)}
-      </div>
-    );
-  }
+function Table(props) {
+  return (
+    <div className={props.rootClassName}>
+      {props.header}
+      {props.data.map(props.mapFunction)}
+    </div>
+  );
 }
+Table.defaultProps = tableDefaultProps;
+Table.propTypes = tablePropTypes;
 
-class TableHeader extends Component {
-  render() {
-    return <div className={this.props.rootClassName}>{this.props.children}</div>;
-  }
+function TableHeader(props) {
+  return <div className={props.rootClassName}>{props.children}</div>;
 }
+TableHeader.defaultProps = tableHeaderDefaultProps;
+TableHeader.propTypes = tableHeaderPropTypes;
 
-export default App;
+export default PSF;

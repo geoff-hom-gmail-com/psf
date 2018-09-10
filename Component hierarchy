@@ -3,7 +3,7 @@ This should be a plain text file. With a decent text editor, can indent/outdent 
 Component hierarchy:
 
 • PSF: contains entire app
-  • Header: shows logo, user name, button for user details
+  • PSFHeader: shows logo, user name, button for user details
     • Y: shows user details? or shows user details in modal?
   • Table: shows the user's projects
     • TableHeader: shows the column titles for all projects
@@ -12,4 +12,4 @@ Component hierarchy:
       • Table: shows the project's quotes
         • TableHeader: shows the column titles for all quotes
         • QuoteRow: shows a row for each quote
-  • Footer: shows PSF link
+  • PSFFooter: shows PSF link
