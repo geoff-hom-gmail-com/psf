@@ -6,6 +6,8 @@ import './App.css';
 let keyCounter = 1;
 // For unique keys. (https://reactjs.org/docs/lists-and-keys.html) Increment, then assign.
 
+// Classes/functions are listed alphabetically.
+
 const expandableRowDefaultProps = {
   rowComponent: null,
   table: null,
@@ -81,7 +83,32 @@ const tableHeaderPropTypes = {
   rootClassName: PropTypes.string.isRequired,
 };
 
-// Classes/functions are listed alphabetically.
+const ExpandableProjectRow = (project) => {
+  const quoteTableHeader = (
+    <TableHeader rootClassName="quote-table-header">
+      <p className="quote-description">Description</p>
+      <p className="quote-vendor">Vendor</p>
+      <p className="quote-expiration">Expires</p>
+      <p className="quote-cost">$</p>
+    </TableHeader>
+  );
+  const quoteTable = (
+    <Table
+      data={project.quotes}
+      header={quoteTableHeader}
+      mapFunction={quote => <QuoteRow data={quote} key={(keyCounter += 1)} />}
+      rootClassName="quote-table"
+    />
+  );
+
+  return (
+    <ExpandableRow
+      key={(keyCounter += 1)}
+      rowComponent={<ProjectInfoRow data={project} />}
+      table={quoteTable}
+    />
+  );
+};
 
 // Show a row. Can toggle a table below that.
 class ExpandableRow extends Component {
@@ -213,17 +240,11 @@ class PSF extends Component {
         <p>New?</p>
       </TableHeader>
     );
-    const quoteTableHeader = (
-      <TableHeader rootClassName="quote-table-header">
-        <p className="quote-description">Description</p>
-        <p className="quote-vendor">Vendor</p>
-        <p className="quote-expiration">Expires</p>
-        <p className="quote-cost">$</p>
-      </TableHeader>
-    );
 
     return (
       <div className="App">
+        {/* I'd like to fetch here. How? */}
+
         {/* Would prefer error message at top. In practice, it currently
           appears on page's bottom. Why? Something to do with being async?
           */}
@@ -235,24 +256,7 @@ class PSF extends Component {
         <Table
           data={user.projects}
           header={projectTableHeader}
-          mapFunction={(project) => {
-            const quoteTable = (
-              <Table
-                data={project.quotes}
-                header={quoteTableHeader}
-                mapFunction={quote => <QuoteRow data={quote} key={(keyCounter += 1)} />}
-                rootClassName="quote-table"
-              />
-            );
-
-            return (
-              <ExpandableRow
-                key={(keyCounter += 1)}
-                rowComponent={<ProjectInfoRow data={project} />}
-                table={quoteTable}
-              />
-            );
-          }}
+          mapFunction={ExpandableProjectRow}
           rootClassName="project-table"
         />
 
@@ -273,6 +277,7 @@ const PSFFooter = () => (
 const PSFHeader = (props) => {
   // Allow no user, null user, and user without name.
   const name = props.user ? props.user.name : 'Guest';
+
   return (
     <header className="header">
       <img src={logo} className="logo" alt="logo" />
