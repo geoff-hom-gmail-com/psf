@@ -91,15 +91,15 @@ const quoteRowPropTypes = {
 };
 
 const tablePropTypes = {
+  className: PropTypes.string.isRequired,
   data: PropTypes.array,
   header: PropTypes.element,
   mapFunction: PropTypes.func.isRequired,
-  rootClassName: PropTypes.string.isRequired,
 };
 
 const tableHeaderPropTypes = {
   children: PropTypes.array.isRequired,
-  rootClassName: PropTypes.string.isRequired,
+  className: PropTypes.string.isRequired,
 };
 
 // Show error in error section. Ends message with a period.
@@ -108,7 +108,7 @@ Error.propTypes = errorPropTypes;
 
 const ExpandableProjectRow = (project) => {
   const quoteTableHeader = (
-    <TableHeader rootClassName="quote-table-header">
+    <TableHeader className="quote-table-header">
       <p className="quote-description">Description</p>
       <p className="quote-vendor">Vendor</p>
       <p className="quote-expiration">Expires</p>
@@ -117,10 +117,10 @@ const ExpandableProjectRow = (project) => {
   );
   const quoteTable = (
     <Table
+      className="quote-table"
       data={project.quotes}
       header={quoteTableHeader}
       mapFunction={quote => <QuoteRow data={quote} key={(keyCounter += 1)} />}
-      rootClassName="quote-table"
     />
   );
 
@@ -229,7 +229,7 @@ const PSF = () => {
   // const url = "https://wrongdomain.typicode.com";
 
   const projectTableHeader = (
-    <TableHeader rootClassName="project-table-header">
+    <TableHeader className="project-table-header">
       <p />
       <p className="project-name">Project name</p>
       <p className="project-quotes">Quotes</p>
@@ -249,7 +249,7 @@ const PSF = () => {
               data={user.projects}
               header={projectTableHeader}
               mapFunction={ExpandableProjectRow}
-              rootClassName="project-table"
+              className="project-table"
             />
 
             <PSFFooter />
@@ -300,7 +300,7 @@ QuoteRow.propTypes = quoteRowPropTypes;
 
 // Make a table. Takes in a map function to make the rows.
 const Table = props => (
-  <div className={props.rootClassName}>
+  <div className={props.className}>
     {props.header}
     {props.data.map(props.mapFunction)}
   </div>
@@ -308,7 +308,7 @@ const Table = props => (
 Table.defaultProps = tableDefaultProps;
 Table.propTypes = tablePropTypes;
 
-const TableHeader = props => <div className={props.rootClassName}>{props.children}</div>;
+const TableHeader = props => <div className={props.className}>{props.children}</div>;
 TableHeader.defaultProps = tableHeaderDefaultProps;
 TableHeader.propTypes = tableHeaderPropTypes;
 
