@@ -113,16 +113,14 @@ class ExpandableRow extends Component {
 ExpandableRow.defaultProps = expandableRowDefaultProps;
 ExpandableRow.propTypes = expandableRowPropTypes;
 
-function ProjectInfoRow(props) {
-  return (
-    <div className="project-info-row">
-      <p className="project-name">{props.data.name}</p>
-      <p className="project-quotes">{props.data.quotes.length}</p>
-      <p>{props.hasNew ? '(NEW)' : ' '}</p>
-      <button type="button">EDIT</button>
-    </div>
-  );
-}
+const ProjectInfoRow = props => (
+  <div className="project-info-row">
+    <p className="project-name">{props.data.name}</p>
+    <p className="project-quotes">{props.data.quotes.length}</p>
+    <p>{props.hasNew ? '(NEW)' : ' '}</p>
+    <button type="button">EDIT</button>
+  </div>
+);
 ProjectInfoRow.defaultProps = projectInfoRowDefaultProps;
 ProjectInfoRow.propTypes = projectInfoRowPropTypes;
 
@@ -264,17 +262,15 @@ class PSF extends Component {
   }
 }
 
-function PSFFooter() {
-  return (
-    <footer className="footer">
-      <h1>
-        <a href="https://www.psf.com/">PSF</a>
-      </h1>
-    </footer>
-  );
-}
+const PSFFooter = () => (
+  <footer className="footer">
+    <h1>
+      <a href="https://www.psf.com/">PSF</a>
+    </h1>
+  </footer>
+);
 
-function PSFHeader(props) {
+const PSFHeader = (props) => {
   // Allow no user, null user, and user without name.
   const name = props.user ? props.user.name : 'Guest';
   return (
@@ -284,39 +280,33 @@ function PSFHeader(props) {
       <button type="button">User Details</button>
     </header>
   );
-}
+};
 PSFHeader.defaultProps = psfHeaderDefaultProps;
 PSFHeader.propTypes = psfHeaderPropTypes;
 
-function QuoteRow(props) {
-  return (
-    <div className="quote-row">
-      <p className="quote-description">{props.data.description}</p>
-      <p className="quote-vendor">{props.data.vendor}</p>
-      <p className="quote-expiration">{props.data.expirationDate}</p>
-      <p className="quote-cost">{`$${props.data.cost}`}</p>
-      <button type="button">Details</button>
-    </div>
-  );
-}
+const QuoteRow = props => (
+  <div className="quote-row">
+    <p className="quote-description">{props.data.description}</p>
+    <p className="quote-vendor">{props.data.vendor}</p>
+    <p className="quote-expiration">{props.data.expirationDate}</p>
+    <p className="quote-cost">{`$${props.data.cost}`}</p>
+    <button type="button">Details</button>
+  </div>
+);
 QuoteRow.defaultProps = quoteRowDefaultProps;
 QuoteRow.propTypes = quoteRowPropTypes;
 
 // Make a table. Takes in a map function to make the rows.
-function Table(props) {
-  return (
-    <div className={props.rootClassName}>
-      {props.header}
-      {props.data.map(props.mapFunction)}
-    </div>
-  );
-}
+const Table = props => (
+  <div className={props.rootClassName}>
+    {props.header}
+    {props.data.map(props.mapFunction)}
+  </div>
+);
 Table.defaultProps = tableDefaultProps;
 Table.propTypes = tablePropTypes;
 
-function TableHeader(props) {
-  return <div className={props.rootClassName}>{props.children}</div>;
-}
+const TableHeader = props => <div className={props.rootClassName}>{props.children}</div>;
 TableHeader.defaultProps = tableHeaderDefaultProps;
 TableHeader.propTypes = tableHeaderPropTypes;
 
