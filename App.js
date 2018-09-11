@@ -1,16 +1,23 @@
 import PropTypes from 'prop-types';
 import React, { Component, Fragment } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import localData from './localTesting';
+import logo from './logo.svg';
 
 let keyCounter = 1;
 // For unique keys. (https://reactjs.org/docs/lists-and-keys.html) Increment, then assign.
 
 // Classes/functions are listed alphabetically.
 
+// Default props.
 const expandableRowDefaultProps = {
   rowComponent: null,
   table: null,
+};
+
+const fetchDefaultProps = {
+  localData: null,
+  testLocal: false,
 };
 
 const projectInfoRowDefaultProps = {
@@ -43,9 +50,21 @@ const tableDefaultProps = {
 
 const tableHeaderDefaultProps = {};
 
+// PropTypes.
+const errorPropTypes = {
+  message: PropTypes.string.isRequired,
+};
+
 const expandableRowPropTypes = {
   rowComponent: PropTypes.element,
   table: PropTypes.element,
+};
+
+const fetchPropTypes = {
+  functionUsingData: PropTypes.func.isRequired,
+  localData: PropTypes.shape({}),
+  testLocal: PropTypes.bool,
+  url: PropTypes.string.isRequired,
 };
 
 const projectInfoRowPropTypes = {
@@ -82,6 +101,10 @@ const tableHeaderPropTypes = {
   children: PropTypes.array.isRequired,
   rootClassName: PropTypes.string.isRequired,
 };
+
+// Show error in error section. Ends message with a period.
+const Error = props => <p className="error">{`Error: ${props.message}.`}</p>;
+Error.propTypes = errorPropTypes;
 
 const ExpandableProjectRow = (project) => {
   const quoteTableHeader = (
@@ -140,6 +163,51 @@ class ExpandableRow extends Component {
 ExpandableRow.defaultProps = expandableRowDefaultProps;
 ExpandableRow.propTypes = expandableRowPropTypes;
 
+// Fetch url, then send the data to the given function.
+class Fetch extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      error: null,
+      json: null,
+    };
+  }
+
+  componentDidMount() {
+    if (this.props.testLocal) {
+      this.setState({ json: this.props.localData });
+    } else {
+      fetch(this.props.url)
+        .then((response) => {
+          // We check the response status as fetch won't throw on 404, but we want it to.
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error(`Response was not ok. Status: ${response.status}.`);
+        })
+        .then((json) => {
+          this.setState({ json });
+        })
+        .catch((error) => {
+          this.setState({ error });
+        });
+    }
+  }
+
+  render() {
+    const error = this.state.error;
+    const json = this.state.json;
+    return (
+      <Fragment>
+        {error ? <Error message={`Fetch: ${error.message}`} /> : null}
+        {json ? this.props.functionUsingData(json) : null}
+      </Fragment>
+    );
+  }
+}
+Fetch.defaultProps = fetchDefaultProps;
+Fetch.propTypes = fetchPropTypes;
+
 const ProjectInfoRow = props => (
   <div className="project-info-row">
     <p className="project-name">{props.data.name}</p>
@@ -151,120 +219,49 @@ const ProjectInfoRow = props => (
 ProjectInfoRow.defaultProps = projectInfoRowDefaultProps;
 ProjectInfoRow.propTypes = projectInfoRowPropTypes;
 
-class PSF extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      // To report fetch error.
-      error: null,
+const PSF = () => {
+  // To toggle local testing.
+  // const testLocal = false;
+  const testLocal = true;
 
-      user: {},
-    };
-  }
+  const url = 'https://jsonplaceholder.typicode.com/users/1';
+  // To test fetch error, use line below.
+  // const url = "https://wrongdomain.typicode.com";
 
-  // move this later to wherever it belongs; maybe I can extract Fetch code with render prop?
-  componentDidMount() {
-    const user = {
-      id: 1,
-      name: 'Bob Graham',
-      projects: [
-        {
-          name: 'Firebird',
-          quotes: [
-            {
-              description: 'Transmission',
-              vendor: 'Transmissions, Inc.',
-              expirationDate: '8.22.18',
-              cost: 2200,
-            },
-            {
-              description: 'Engine',
-              vendor: 'Trump Engines',
-              expirationDate: '8.29.18',
-              cost: 4000,
-            },
-          ],
-        },
-        {
-          name: 'House',
-          quotes: [],
-        },
-      ],
-    };
+  const projectTableHeader = (
+    <TableHeader rootClassName="project-table-header">
+      <p />
+      <p className="project-name">Project name</p>
+      <p className="project-quotes">Quotes</p>
+      <p>New?</p>
+    </TableHeader>
+  );
 
-    // const testLocal = false;
-    // Uncomment line below to test locally.
-    const testLocal = true;
+  return (
+    <div className="psf">
+      <Fetch
+        functionUsingData={user => (
+          <Fragment>
+            <PSFHeader user={user} />
 
-    if (testLocal) {
-      this.setState({
-        user,
-      });
-    } else {
-      const url = 'https://jsonplaceholder.typicode.com/users/1';
-      // To test fetch error, use line below.
-      // const url = "https://wrongdomain.typicode.com";
+            {/* A project table. Each row can expand into a quote table. */}
+            <Table
+              data={user.projects}
+              header={projectTableHeader}
+              mapFunction={ExpandableProjectRow}
+              rootClassName="project-table"
+            />
 
-      fetch(url)
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          }
-          // I thought fetch didn't throw an error on 404. However, I couldn't
-          // get the error below to throw on 404. Leaving it in case.
-          throw new Error(`Response was not ok. Status: ${response.status}.`);
-        })
-        .then((json) => {
-          // console.log("json name: ", json.name);
-          // Not sure how best to get data. Probably call function here to populate user from json.
-          // PrevState and the spread operator are safer: https://stackoverflow.com/questions/43638938/updating-an-object-with-setstate-in-react. Not sure how to safely and cleanly update the state of just one property. Perhaps don't want to have entire user object in component state. It's not the model; it's managing the UI state of the component.
-          this.setState(prevState => ({
-            user: { ...prevState.user, name: json.name },
-          }));
-        })
-        .catch((error) => {
-          // console.log(`There was a fetch error: ${error.message}.`);
-          this.setState({ error });
-        });
-    }
-  }
-
-  render() {
-    const error = this.state.error;
-    const user = this.state.user;
-    const projectTableHeader = (
-      <TableHeader rootClassName="project-table-header">
-        <p />
-        <p className="project-name">Project name</p>
-        <p className="project-quotes">Quotes</p>
-        <p>New?</p>
-      </TableHeader>
-    );
-
-    return (
-      <div className="App">
-        {/* I'd like to fetch here. How? */}
-
-        {/* Would prefer error message at top. In practice, it currently
-          appears on page's bottom. Why? Something to do with being async?
-          */}
-        {error ? `There was a fetch error: ${error.message}.` : null}
-
-        <PSFHeader user={user} />
-
-        {/* A project table. Each row can expand into a quote table. */}
-        <Table
-          data={user.projects}
-          header={projectTableHeader}
-          mapFunction={ExpandableProjectRow}
-          rootClassName="project-table"
-        />
-
-        <PSFFooter />
-      </div>
-    );
-  }
-}
+            <PSFFooter />
+          </Fragment>
+        )}
+        localData={localData}
+        testLocal={testLocal}
+        url={url}
+      />
+    </div>
+  );
+};
 
 const PSFFooter = () => (
   <footer className="footer">

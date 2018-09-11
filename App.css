@@ -1,17 +1,5 @@
 /* Alphabetical. */
 
-.App {
-  display: grid;
-  grid-template-areas:
-    "header header"
-    "main main"
-    "footer footer";
-  grid-template-rows: auto 1fr auto;
-  grid-template-columns: 1fr 1fr;
-  min-height: 100%;
-  text-align: center;
-}
-
 /* Aligns with .project-table-header.  */
 .expandable-project-row {
   display: grid;
@@ -69,6 +57,19 @@
   grid-template-columns: 0.8fr 8fr 1fr 1fr 1.2fr;
   padding: 0 10px;
   width: 90%;
+}
+
+.psf {
+  display: grid;
+  grid-template-areas:
+    "error error"
+    "header header"
+    "main main"
+    "footer footer";
+  grid-template-rows: auto auto 1fr auto;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100%;
+  text-align: center;
 }
 
 /* Aligns with .quote-table-header. */
