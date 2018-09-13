@@ -1,4 +1,5 @@
 import React from 'react';
+
 import './App.css';
 import ExpandableRow from './ExpandableRow';
 import ProjectInfoRow from './ProjectInfoRow';

@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component, Fragment } from 'react';
+
 import Error from './Error';
 
 const fetchPropTypes = {

@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+
 import './App.css';
 import ExpandableProjectRow from './ExpandableProjectRow';
 import Fetch from './Fetch';
@@ -40,14 +41,13 @@ function PSF() {
               mapFunction={ExpandableProjectRow}
               className="project-table"
             />
-
-            <PSFFooter />
           </Fragment>
         )}
         localData={localData}
         testLocal={testLocal}
         url={url}
       />
+      <PSFFooter />
     </div>
   );
 }
