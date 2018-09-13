@@ -1,3 +1,10 @@
+/**
+ * Copyright placeholder.
+ *
+ * (Placeholder) This source code is licensed under the (X) license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 import React, { Fragment } from 'react';
 
 import './App.css';
@@ -9,6 +16,12 @@ import PSFHeader from './PSFHeader';
 import Table from './Table';
 import TableHeader from './TableHeader';
 
+/**
+ * TODO: Figure out comment best practices like this.
+ *
+ * @param {} placeholder.
+ * @return {} placeholder.
+ */
 function PSF() {
   // To toggle local testing.
   // const testLocal = false;
@@ -33,7 +46,6 @@ function PSF() {
         functionUsingData={user => (
           <Fragment>
             <PSFHeader user={user} />
-
             {/* A project table. Each row can expand into a quote table. */}
             <Table
               data={user.projects}
