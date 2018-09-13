@@ -3,6 +3,9 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
 import './App.css';
+import ModalWindow from './ModalWindow';
+
+// For accessibility, try react-modal.
 
 // https://assortment.io/posts/accessible-modal-component-react-portals-part-1
 // class Modal extends Component {
@@ -38,7 +41,6 @@ class Modal extends Component {
       this.modalRoot.id = 'modal-root';
       document.body.appendChild(this.modalRoot);
     }
-    // Instead of a div, this could be my Modal wrapper? (Including a close button.)
     this.element = document.createElement('div');
   }
 
@@ -59,8 +61,14 @@ class Modal extends Component {
   }
 
   render() {
+    // return ReactDOM.createPortal(
+    //   this.props.children,
+    //   this.element,
+    // );
     return ReactDOM.createPortal(
-      this.props.children,
+      <ModalWindow>
+        {this.props.children}
+      </ModalWindow>,
       this.element,
     );
   }

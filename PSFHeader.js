@@ -27,7 +27,7 @@ class PSFHeader extends Component {
   }
 
   openModal() {
-    // do stuff
+    // show the Modal, somehow; I guess it's always there, mounted away properly as the entire header was rendered. It's basically returning null if the props for "open" is false. So it's mounting nothing or all of it, but it's always mounted. Here, we can just store state of whether to have the modal open or closed, then pass that as props.
     console.log('test12');
   }
 
@@ -41,7 +41,6 @@ class PSFHeader extends Component {
           User Details
         </button>
         <Modal>
-          {console.log('test1')}
           <div className="modal">
             <p>this should be in modal</p>
             <button type="button">ClickHere</button>
