@@ -4,12 +4,18 @@ Component hierarchy:
 
 • PSF: contains entire app
   • PSFHeader: shows logo, user name, button for user details
-    • Y: shows user details? or shows user details in modal?
+    • Modal: shows X in modal
+      • UserDetails: shows user details
+        • ??: ??
   • Table: shows the user's projects
     • TableHeader: shows the column titles for all projects
     • ExpandableRow: expands to show a project's quotes
       • ProjectInfoRow: shows info for a project
+        • Modal
+          • ??: ??
       • Table: shows the project's quotes
         • TableHeader: shows the column titles for all quotes
         • QuoteRow: shows a row for each quote
+          • Modal
+            • ??: ??
   • PSFFooter: shows PSF link
