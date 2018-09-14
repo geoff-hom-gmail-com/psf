@@ -20,18 +20,17 @@ const psfHeaderDefaultProps = {
 class PSFHeader extends Component {
   constructor(props) {
     super(props);
-
+    this.state = {
+      modalIsOpen: false,
+    };
     this.closeModal = this.closeModal.bind(this);
     // Allow user without name.
     this.name = props.user ? props.user.name : 'Guest';
     this.openModal = this.openModal.bind(this);
-
-    this.state = {
-      modalIsOpen: false,
-    };
   }
 
   componentWillMount() {
+    // At least one component using a modal needs this to suppress an accessibility error. (http://reactcommunity.org/react-modal/examples/set_app_element.html)
     ReactModal.setAppElement('#root');
   }
 
@@ -53,7 +52,7 @@ class PSFHeader extends Component {
           User Details
         </button>
         <ReactModal contentLabel="User Details" isOpen={this.state.modalIsOpen}>
-          <p>This should be in modal</p>
+          <p>{`Name: ${this.name}`}</p>
           <button onClick={this.closeModal} type="button">
             Close
           </button>
