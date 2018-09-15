@@ -2,9 +2,9 @@ Under construction.
 
 ## Table of Contents
 
-- [Updating to New Releases](#updating-to-new-releases)
+- [Keep this](#updating-to-new-releases)
 - [Sending Feedback](#sending-feedback)
-- [Folder Structure](#folder-structure)
+- [To try the prototype](#to-try-the-prototype)
 - [Available Scripts](#available-scripts)
   - [npm start](#npm-start)
   - [npm test](#npm-test)
@@ -22,35 +22,29 @@ This is a prototype of PSF's UI. Includes:
 
 This was created via create-react-app.
 
-To try the prototype:
+## To try the prototype
 
 * GitHub Pages?
 
-To modify the prototype and test on your machine:
+## To modify the prototype and test on your machine
 
 * <detail simplest installation and running>
 * `code` via backticks
 
-[this is a link](https://github.com/facebookincubator/create-react-app/blob/master/CHANGELOG.md), findsly.
+[this is a link](https://github.com/facebookincubator/create-react-app/blob/master/CHANGELOG.md).
 
 ```
 my-app/
   this is multline code
-  node_modules/
-  package.json
-  public/
-    index.html
-
-    logo.svg
 ```
 
-For , **this is boldes**:
+For **bold**:
 
-Only files inside `public` can be used from `public/index.html`.<br>
-Read instructions below for using assets from JavaScript and HTML.
+Only fi.(no br)
+Read instructions below for using assets from JavaScript and HTML.<br>
+another line
 
-You can, however, create more top-level directories.<br>
-They will not be included in the production build so you can use them for things like documentation.
+You can, however, create more top-level directories.
 
 ## Available Scripts
 
@@ -59,4 +53,3 @@ In the project directory, you can run:
 ### `npm start`
 
 Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
