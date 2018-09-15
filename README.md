@@ -1,4 +1,4 @@
-Under construction.
+(TODO: Under construction.)
 
 This is a prototype of PSF's UI.
 
@@ -10,30 +10,33 @@ This is a prototype of PSF's UI.
 
 ## Features
 
-This is a prototype of PSF's UI. Includes:
+* Load local data (default)
+* Load data from url
+* Display projects and quotes
+* Open modals for more info
 
-* Can load local data (default)
-* Can load data from url
-* Displays projects and quotes
-* open modals for more info
-
-This was created via create-react-app.
+This app was created via `create-react-app`.
 
 ## Try prototype
 
-* GitHub Pages?
+* GitHub Pages: https://geoffhom.github.io/psf/
 
 ## Modify prototype
 
+(TODO: Constructing.)
 To modify the prototype: you can download the code, edit as you see fit, and run it on your machine:
 
 * <detail simplest installation and running>
 
+### Loading data
+
+* By default, local data is used (`localTesting.js`).
+* To load remote data:
+  * In `App.js`, set `testLocal = false`.
+  * The default remote data is from [jsonplaceholder.typicode.com](https://jsonplaceholder.typicode.com/users/1).
+  * To change the remote URL, look in `App.js` for `const url`.
+
 ## Markdown examples
-
-* `code` via backticks
-
-[this is a link](https://github.com/facebookincubator/create-react-app/blob/master/CHANGELOG.md).
 
 ```
 my-app/
@@ -42,6 +45,6 @@ my-app/
 
 For **bold**:
 
-### `npm start`
+### npm start
 
 Runs mode.<br>
