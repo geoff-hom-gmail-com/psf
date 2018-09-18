@@ -1,5 +1,3 @@
-(TODO: Under construction.)
-
 This is a prototype of PSF's UI.
 
 ## Table of Contents
@@ -15,36 +13,33 @@ This is a prototype of PSF's UI.
 * Display projects and quotes
 * Open modals for more info
 
-This app was created via `create-react-app`.
+This app was created via [`create-react-app`](https://github.com/facebook/create-react-app/).
 
 ## Try prototype
 
-* GitHub Pages: https://geoffhom.github.io/psf/
+* Hosted on [GitHub Pages](https://geoffhom.github.io/psf/)
 
 ## Modify prototype
 
-(TODO: Constructing.)
-To modify the prototype: you can download the code, edit as you see fit, and run it on your machine:
+You can download the code, run it on your machine, then edit as you see fit:
 
-* <detail simplest installation and running>
+* [Clone the repository](https://help.github.com/articles/cloning-a-repository/) onto your computer.
+  * This should create the directory `psf`.
+* Using the command line, go to the `psf` directory (e.g., `cd psf`).
+* Install the necessary packages by running `npm install`.
+  * This may take a full minute and will install several thousand packages under `node_modules`.
+  * If you don't have npm, try [the official site](https://www.npmjs.com/).
+* Run `npm start`.
+  * This should automatically open a browser tab at something like http://computer-name.local:3000/.
+  * The PSF prototype should appear!
+* To edit the sourcecode, use your favorite editor/IDE.
+  * I used [Atom](https://atom.io/).
+* As the prototype used `create-react-app`, check out [its User Guide](https://github.com/facebook/create-react-app/) for helpful info.
 
-### Loading data
+### Load data
 
 * By default, local data is used (`localTesting.js`).
 * To load remote data:
   * In `App.js`, set `testLocal = false`.
   * The default remote data is from [jsonplaceholder.typicode.com](https://jsonplaceholder.typicode.com/users/1).
   * To change the remote URL, look in `App.js` for `const url`.
-
-## Markdown examples
-
-```
-my-app/
-  this is multline code
-```
-
-For **bold**:
-
-### npm start
-
-Runs mode.<br>
